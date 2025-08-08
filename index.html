@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>День Рождения — Дамир</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:linear-gradient(180deg,#071026,#07162c);--accent:#ffd166;--accent2:#7be495;--glass:rgba(255,255,255,0.04)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Inter,system-ui,Arial;background:var(--bg);color:#eaf6ff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.container{max-width:1100px;margin:20px auto;padding:18px}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.title{font-family:'Playfair Display',serif;font-size:30px;margin:0}
+.controls{display:flex;gap:10px;align-items:center}
+.btn{padding:10px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:700}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#ffb56b);color:#081022}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff}
+.card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02));backdrop-filter:blur(10px);border-radius:14px;padding:16px;box-shadow:0 12px 36px rgba(0,0,0,0.6);margin-top:14px}
+.layout{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.left{flex:1;min-width:260px}
+.right{width:360px;min-width:260px}
+.meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.meta .m{background:rgba(255,255,255,0.02);padding:10px;border-radius:12px;min-width:120px}
+.count{font-size:20px;font-weight:700;margin-top:12px}
+.gallery{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.thumb{width:120px;height:120px;border-radius:12px;background:linear-gradient(180deg,#fff6f9,#ffeef4);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,0.35)}
+.cake-wrap{display:flex;align-items:center;justify-content:center;padding:12px}
+svg.cake{width:220px;height:220px;filter:drop-shadow(0 12px 24px rgba(0,0,0,0.45));cursor:pointer;transition:transform .28s}
+svg.cake:hover{transform:translateY(-6px) scale(1.02)}
+.note{color:#cfe8ff99;margin-top:8px}
+.game{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.balloon-btn{width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(180deg,#ff9aa2,#ff6b6b);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#2b1220;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,0.45)}
+#confetti{position:fixed;left:0;top:0;pointer-events:none;width:100%;height:100%;z-index:9999}
+.controls small{display:block;color:#cfe8ffaa;font-size:13px;text-align:right}
+.footer{margin-top:28px;text-align:center;color:#bcd8ff88;font-size:14px;padding-bottom:40px}
+.hidden{display:none}
+.badge{padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.03);font-weight:700}
+.kbd{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:6px;font-weight:700}
+@media(max-width:920px){.right{width:100%}.layout{flex-direction:column-reverse}} 
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="container">
+  <header class="header">
+    <div>
+      <div class="title">Приглашение — <span style="color:var(--accent)">Дамир</span></div>
+      <div class="note">22 августа 2025 • Кафе «Ахат», с. Кызыл Кайрат</div>
+    </div>
+    <div class="controls">
+      <button class="btn ghost" id="musicToggle">♪ Музыка</button>
+      <button class="btn ghost" id="ttsBtn">🔊 Слушать</button>
+      <button class="btn primary" id="whBtn">💬 Я в деле!</button>
+      <div style="width:8px"></div>
+      <div class="badge" id="greet"></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main class="left card">
+      <div class="meta">
+        <div class="m"><strong>Дата</strong><div style="margin-top:6px">22.08.2025</div></div>
+        <div class="m"><strong>Время</strong><div style="margin-top:6px">19:00 (местное)</div></div>
+        <div class="m"><strong>Место</strong><div style="margin-top:6px">Кафе «Ахат», с. Кызыл Кайрат</div></div>
+      </div>
+
+      <div class="count" id="count">-- д -- ч -- м -- с</div>
+
+      <div class="card" style="margin-top:14px">
+        <h3 style="margin:0">Фото / Идеи</h3>
+        <div class="gallery" id="gallery">
+          <div class="thumb" title="Иллюстрация торта">
+            <!-- small inline cake icon -->
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="7" rx="2" fill="#ffdede"/><rect x="6" y="7" width="12" height="5" rx="1.5" fill="#fff6f9"/></svg>
+          </div>
+          <div class="thumb" title="Украшения">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#ff8fab" stroke-width="1.5"/></svg>
+          </div>
+          <div class="thumb" title="Атмосфера">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 7h7l-5.6 4.1L19 22l-7-4-7 4 1.6-8.9L2 9h7l3-7z" stroke="#7ab7ff" stroke-width="1.3"/></svg>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn primary" id="cameraBtn">📸 Сделать фото (камера)</button>
+          <small class="note" style="display:block;margin-top:8px">Фото гостя можно сохранить или поделиться.</small>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3 style="margin:0">Что подарить? 🎁</h3>
+        <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+          <button class="btn ghost" id="spinGift">🎰 Сгенерировать идею</button>
+          <div class="kbd" id="giftResult">Нажми «Сгенерировать»</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3 style="margin:0">Секретное письмо</h3>
+        <p class="note">Найди маленький значок 🎁 внизу страницы — нажми, чтобы получить секретное послание.</p>
+      </div>
+
+    </main>
+
+    <aside class="right">
+      <div class="card" style="text-align:center">
+        <div class="cake-wrap">
+          <!-- big illustrative cake SVG (multilayer) -->
+          <svg class="cake" id="cake" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#fff7f9"/><stop offset="1" stop-color="#ffeef4"/></linearGradient>
+              <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="#ffdede"/><stop offset="1" stop-color="#ffc2d1"/></linearGradient>
+            </defs>
+            <rect x="20" y="90" width="160" height="60" rx="12" fill="url(#g1)"/>
+            <rect x="34" y="60" width="132" height="50" rx="10" fill="url(#g2)"/>
+            <ellipse cx="100" cy="150" rx="68" ry="10" fill="rgba(0,0,0,0.12)"/>
+            <path d="M34 60c10 12 40 12 66 6s46-6 66-6v6H34z" fill="#fff1f6" opacity="0.95"/>
+            <g id="candles">
+              <rect x="86" y="28" width="4" height="28" rx="2" fill="#ffb86b"/>
+              <rect x="96" y="34" width="4" height="22" rx="2" fill="#ffd166"/>
+              <rect x="106" y="30" width="4" height="26" rx="2" fill="#ff9aa2"/>
+              <path d="M88 24c0-3 4-6 4-6s4 3 4 6" fill="#ffd166"/>
+            </g>
+            <circle cx="70" cy="110" r="6" fill="#ff8fab"/>
+            <circle cx="130" cy="120" r="6" fill="#7ab7ff"/>
+            <text x="100" y="100" text-anchor="middle" font-family="Inter" font-size="12" fill="#4c2b3a" font-weight="700">С ДНЁМ РОЖДЕНИЯ!</text>
+          </svg>
+        </div>
+        <div class="note">Нажми на торт — праздничное конфетти появится.</div>
+
+        <div class="card" style="margin-top:12px">
+          <div style="font-weight:700">Мини-игра: лопни шарики</div>
+          <div class="game" id="game">
+            <button class="balloon-btn" data-color="#ff9aa2">1</button>
+            <button class="balloon-btn" data-color="#ffd166">2</button>
+            <button class="balloon-btn" data-color="#7ab7ff">3</button>
+            <button class="balloon-btn" data-color="#c9a6ff">4</button>
+          </div>
+          <div class="note" style="margin-top:8px">Лопни 4 шарика — запустится эффект.</div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div style="display:flex;gap:8px;flex-direction:column;align-items:center">
+            <button class="btn primary" id="addCal">➕ Добавить в календарь</button>
+            <button class="btn ghost" id="openMap">Открыть в картах</button>
+            <button class="btn ghost" id="shareBtn">🔗 Поделиться</button>
+            <div style="margin-top:8px"><small class="note">QR & WhatsApp доступны внизу страницы</small></div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <div>© 2025 — Приглашение для Дамира</div>
+    <div style="margin-top:8px">Нажми и удерживай значок 🎁 чтобы увидеть секретное послание</div>
+  </footer>
+</div>
+
+<!-- secret gift icon -->
+<div id="secret" title="Секретное письмо" style="position:fixed;right:18px;bottom:18px;font-size:28px;cursor:pointer;z-index:9999">🎁</div>
+
+<script>
+// Personalization: show name if ?name=... in URL
+function getParam(name){ const url=new URL(location.href); return url.searchParams.get(name); }
+const guest = getParam('name'); const greet = document.getElementById('greet');
+if(guest){ greet.textContent = guest + ', привет!'; } else { greet.textContent = 'Гость'; }
+
+// Countdown (Almaty UTC+6 19:00)
+const target = new Date('2025-08-22T19:00:00+06:00').getTime();
+const cdEl = document.getElementById('count');
+function updateCountdown(){ const now=Date.now(); let diff=Math.max(0,target-now); const days=Math.floor(diff/(1000*60*60*24)); diff-=days*(1000*60*60*24); const hours=Math.floor(diff/(1000*60*60)); diff-=hours*(1000*60*60); const minutes=Math.floor(diff/(1000*60)); diff-=minutes*(1000*60); const seconds=Math.floor(diff/1000); cdEl.textContent = `${String(days).padStart(2,'0')} д ${String(hours).padStart(2,'0')} ч ${String(minutes).padStart(2,'0')} м ${String(seconds).padStart(2,'0')} с`; if(days===0 && hours===0 && minutes===0 && seconds===0){ onStart(); } }
+updateCountdown(); setInterval(updateCountdown,1000);
+
+// onStart: fireworks & message
+function onStart(){ launchConfetti(500); setTimeout(()=> alert('Праздник начался! 🎉'), 600); }
+
+// Confetti engine (canvas)
+const canvas = document.getElementById('confetti'); const ctx = canvas.getContext('2d');
+let W=window.innerWidth, H=window.innerHeight; canvas.width=W; canvas.height=H; window.addEventListener('resize', ()=>{W=window.innerWidth; H=window.innerHeight; canvas.width=W; canvas.height=H;});
+function launchConfetti(count=200){ const arr=[]; for(let i=0;i<count;i++){ arr.push({x:Math.random()*W, y:-Math.random()*H, vx:(Math.random()-0.5)*8, vy:Math.random()*6+2, r:Math.random()*8+4, color:['#ffd166','#ff8fab','#7be495','#7ab7ff','#d6a8ff'][Math.floor(Math.random()*5)], rot:Math.random()*360, vr:(Math.random()-0.5)*8}); } let t=0; function draw(){ ctx.clearRect(0,0,W,H); for(let p of arr){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.08; p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.color; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.4); ctx.restore(); } t++; if(t<500) requestAnimationFrame(draw); else ctx.clearRect(0,0,W,H); } draw(); }
+
+// Cake click -> confetti + small animation
+document.getElementById('cake').addEventListener('click', ()=>{ document.getElementById('cake').animate([{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:480}); launchConfetti(260); });
+
+// Mini-game: pop balloons
+let popped=0; document.getElementById('game').addEventListener('click',(e)=>{ if(e.target.matches('.balloon-btn')){ const btn=e.target; const color=btn.dataset.color; const rect=btn.getBoundingClientRect(); const pop=document.createElement('div'); pop.style.position='fixed'; pop.style.left=(rect.left+rect.width/2)+'px'; pop.style.top=(rect.top+rect.height/2)+'px'; pop.style.width='14px'; pop.style.height='14px'; pop.style.background=color; pop.style.borderRadius='50%'; pop.style.zIndex=9999; document.body.appendChild(pop); pop.animate([{transform:'scale(1)',opacity:1},{transform:'scale(3)',opacity:0}],{duration:480}).onfinish=()=>pop.remove(); popped++; if(popped>=4){ launchConfetti(320); popped=0; } } });
+
+// Gift generator
+const gifts=['Кофейная карта','Набор для ухода','Книга-бестселлер','Подарочный сертификат','Фитнес-аксессуар','Настольная игра','Билеты на концерт','Шоколадный набор','Рюкзак','Подарочная крафт-упаковка'];
+document.getElementById('spinGift').addEventListener('click', ()=>{ const res=gifts[Math.floor(Math.random()*gifts.length)]; document.getElementById('giftResult').textContent=res; });
+
+// Camera photo
+const cameraBtn=document.getElementById('cameraBtn');
+cameraBtn.addEventListener('click', async ()=>{
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:false});
+    const video = document.createElement('video');
+    video.autoplay=true; video.srcObject=stream; video.style.position='fixed'; video.style.left='50%'; video.style.top='50%'; video.style.transform='translate(-50%,-50%)'; video.style.zIndex=99999; video.style.width='90%'; video.style.maxWidth='420px'; video.style.borderRadius='12px'; document.body.appendChild(video);
+    const snapBtn=document.createElement('button'); snapBtn.textContent='Сделать фото'; snapBtn.style.position='fixed'; snapBtn.style.left='50%'; snapBtn.style.top='calc(50% + 260px)'; snapBtn.style.transform='translateX(-50%)'; snapBtn.style.zIndex=99999; snapBtn.className='btn primary'; document.body.appendChild(snapBtn);
+    snapBtn.addEventListener('click', ()=>{ const c=document.createElement('canvas'); c.width=video.videoWidth; c.height=video.videoHeight; c.getContext('2d').drawImage(video,0,0); const data=c.toDataURL('image/png'); const img=document.createElement('img'); img.src=data; img.style.position='fixed'; img.style.right='18px'; img.style.bottom='120px'; img.style.width='120px'; img.style.borderRadius='10px'; img.style.boxShadow='0 8px 20px rgba(0,0,0,0.5)'; document.body.appendChild(img); stream.getTracks().forEach(t=>t.stop()); video.remove(); snapBtn.remove(); });
+  }catch(err){ alert('Камера недоступна: '+err.message); }
+});
+
+// WhatsApp button
+document.getElementById('whBtn').addEventListener('click', ()=>{
+  const phone='77066678090'; const text=encodeURIComponent('Я в деле! 🎉'); const url=`https://wa.me/${phone}?text=${text}`; window.open(url,'_blank');
+});
+
+// Open maps
+document.getElementById('openMap').addEventListener('click', ()=>{
+  const q=encodeURIComponent('Кафе Ахат, село Кызыл Кайрат, Малькеева 64г'); window.open('https://www.google.com/maps/search/?api=1&query='+q,'_blank');
+});
+
+// Share button
+document.getElementById('shareBtn').addEventListener('click', async ()=>{
+  const shareData={title:'Приглашение на День Рождения Дамира', text:'Приходи 22 августа 2025!','url':location.href};
+  try{ if(navigator.share){ await navigator.share(shareData); } else { prompt('Скопируй ссылку для гостей', location.href); } }catch(e){ console.log(e); }
+});
+
+// Add to calendar (Google & ICS)
+document.getElementById('addCal').addEventListener('click', ()=>{
+  const title='День Рождения Дамира'; const details='Кафе Ахат, с. Кызыл Кайрат, Малькеева 64г'; const start='20250822T130000Z'; const end='20250822T160000Z'; // UTC times for 19:00 ALMATY
+  const gurl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${start}/${end}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(details)}`;
+  // ICS file
+  const ics = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${start}\nDTEND:${end}\nLOCATION:${details}\nDESCRIPTION:${details}\nEND:VEVENT\nEND:VCALENDAR`;
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  if(confirm('Открыть Google Calendar или скачать файл .ics? Нажми OK — открыть Google, Отмена — скачать .ics')){ window.open(gurl,'_blank'); } else { const a=document.createElement('a'); a.href=url; a.download='invite_damir.ics'; a.click(); }
+});
+
+// Text-to-speech invitation
+document.getElementById('ttsBtn').addEventListener('click', ()=>{
+  const name = guest?guest:'друг'; const text=`Привет ${name}! Приглашаю тебя на мой день рождения 22 августа 2025 в кафе Ахат, село Кызыл Кайрат. Жду тебя в 19 часов.`;
+  if('speechSynthesis' in window){ const ut = new SpeechSynthesisUtterance(text); ut.rate=1; ut.pitch=1; speechSynthesis.cancel(); speechSynthesis.speak(ut); } else alert('TTS недоступен в вашем браузере.');
+});
+
+// Music toggle (ambient)
+let audio; let musicOn=false;
+document.getElementById('musicToggle').addEventListener('click', ()=>{
+  if(!audio){ audio = new Audio(); audio.src = ''; /* no external music - use speech synth fallback */ }
+  if(!musicOn){ musicOn=true; document.getElementById('musicToggle').textContent='♪ Музыка (вкл)'; // try to play short melody via oscillator
+    try{ const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.type='sine'; o.frequency.setValueAtTime(523.25,ctx.currentTime); o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0.0001,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.02,ctx.currentTime+0.02); o.start(); g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+1.5); setTimeout(()=>{ o.stop(); ctx.close(); },1600); }catch(e){ console.log(e); }
+  } else { musicOn=false; document.getElementById('musicToggle').textContent='♪ Музыка'; if(audio){ audio.pause(); } }
+});
+
+// secret gift press-and-hold
+let secret = document.getElementById('secret'); let holdTimer;
+secret.addEventListener('mousedown', ()=>{ holdTimer = setTimeout(()=>{ alert('Секретное послание от Дамира: Будь готов к сюрпризу! ❤️'); },900); });
+secret.addEventListener('mouseup', ()=>{ clearTimeout(holdTimer); });
+secret.addEventListener('touchstart', ()=>{ holdTimer = setTimeout(()=>{ alert('Секретное послание от Дамира: Будь готов к сюрпризу! ❤️'); },900); });
+secret.addEventListener('touchend', ()=>{ clearTimeout(holdTimer); });
+
+// Swipe down for ribbons (mobile)
+let startY=0; window.addEventListener('touchstart', (e)=> startY=e.touches[0].clientY);
+window.addEventListener('touchend', (e)=>{ const dy = (e.changedTouches[0].clientY - startY); if(dy>80) launchRibbons(); });
+function launchRibbons(){ for(let i=0;i<30;i++){ const el=document.createElement('div'); el.style.position='fixed'; el.style.left=Math.random()*100+'%'; el.style.top='-10%'; el.style.width='6px'; el.style.height='40px'; el.style.background=['#ffd166','#ff8fab','#7be495','#7ab7ff'][Math.floor(Math.random()*4)]; el.style.opacity='0.95'; el.style.transform='rotate('+ (Math.random()*360)+'deg)'; el.style.zIndex=9999; document.body.appendChild(el); el.animate([{transform:'translateY(0)'},{transform:'translateY(110vh) rotate(360deg)'}],{duration:2200+Math.random()*800}); setTimeout(()=>el.remove(),3200); } }
+
+// small interaction: click anywhere -> ripple
+document.addEventListener('click', (e)=>{ const r=document.createElement('div'); r.style.position='absolute'; r.style.left=e.pageX+'px'; r.style.top=e.pageY+'px'; r.style.width='20px'; r.style.height='20px'; r.style.borderRadius='50%'; r.style.background='radial-gradient(circle,#ffffff44,#ffffff00)'; r.style.pointerEvents='none'; r.style.zIndex=9998; document.body.appendChild(r); r.animate([{transform:'scale(1)',opacity:1},{transform:'scale(10)',opacity:0}],{duration:600}).onfinish=()=>r.remove(); });
+
+// keyboard shortcut: press 'g' to open gift generator
+document.addEventListener('keydown',(e)=>{ if(e.key.toLowerCase()==='g') document.getElementById('spinGift').click(); });
+
+</script>
+</body>
+</html>

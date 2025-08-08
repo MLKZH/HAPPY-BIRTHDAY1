@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Приглашение — Дамир</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1: linear-gradient(135deg,#0f1724 0%, #1b1f3b 100%);
+    --accent1: #ffd166;
+    --accent2: #7be495;
+    --glass: rgba(255,255,255,0.06);
+    --glass-2: rgba(255,255,255,0.04);
+    --soft: rgba(255,255,255,0.08);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:var(--bg1);-webkit-font-smoothing:antialiased;}
+  /* Fullscreen envelope stage */
+  .stage{height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+  .envelope-wrap{width:min(720px,92vw);max-width:900px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+  .env-3d{width:420px;height:280px;position:relative;perspective:1200px;cursor:pointer;transition:transform .6s cubic-bezier(.2,.9,.3,1)}
+  .env-card{position:absolute;inset:0;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03));box-shadow:0 20px 50px rgba(2,6,23,0.7);transform-style:preserve-3d;transition:transform .9s ease,box-shadow .3s ease;}
+  .env-card .flap{position:absolute;left:0;right:0;height:50%;background:linear-gradient(180deg,#ffdde1,#ffb3c6);border-top-left-radius:18px;border-top-right-radius:18px;transform-origin:center top;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;color:#2b1220;font-family:'Playfair Display',serif}
+  .env-card .body{position:absolute;left:10px;right:10px;bottom:12px;top:70px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.06));display:flex;align-items:center;justify-content:center;padding:18px;color:#eaf6ff;font-size:18px;text-align:center}
+  .env-card.open{transform: rotateX(180deg) translateY(-26px);box-shadow:0 40px 80px rgba(0,0,0,0.6)}
+  /* subtle decorative lights */
+  .glow{position:absolute;filter:blur(40px);opacity:.25;mix-blend-mode:screen}
+  .glow.g1{width:420px;height:420px;background:radial-gradient(circle at 20% 30%, #ff7ab8 0%, transparent 40%);left:-80px;top:-80px}
+  .glow.g2{width:360px;height:360px;background:radial-gradient(circle at 80% 70%, #7be495 0%, transparent 30%);right:-60px;bottom:-60px}
+  /* title */
+  h1.title{font-family:'Playfair Display',serif;font-size:28px;margin:0;color:#fff;text-shadow:0 6px 18px rgba(0,0,0,0.6)}
+  p.sub{margin:0;color:#cfe8ffcc;font-size:15px}
+  /* transition to main site */
+  .small-note{color:#cfe8ff99;font-size:13px;margin-top:6px}
+  /* responsive */
+  @media (max-width:520px){
+    .env-3d{width:320px;height:220px}
+    .env-card .body{font-size:15px;padding:14px}
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+    <div class="envelope-wrap" aria-hidden="false">
+      <h1 class="title">У тебя в ящике — приглашение</h1>
+      <div class="env-3d" id="env" role="button" aria-label="Открыть конверт">
+        <div class="env-card" id="card">
+          <div class="flap">Открыть</div>
+          <div class="body">Нажми, чтобы открыть приглашение</div>
+        </div>
+      </div>
+      <p class="sub">Кликни по конверту — он красиво откроется и перенесёт тебя на вечеринку ✨</p>
+      <div class="small-note">День рождения: 22 августа 2025 — Кафе «Ахат», с. Кызыл Кайрат</div>
+    </div>
+  </div>
+<script>
+  const env = document.getElementById('env');
+  const card = document.getElementById('card');
+  env.addEventListener('click', ()=>{
+    card.classList.add('open');
+    // launch confetti burst locally (simple)
+    burstConfetti();
+    // redirect with slight delay for animation
+    setTimeout(()=> window.location.href = 'index.html', 1400);
+  });
+
+  // small confetti burst: create simple elements in DOM
+  function burstConfetti(){
+    const colors = ['#ffd166','#ff8fab','#7be495','#7ab7ff','#d6a8ff'];
+    for(let i=0;i<24;i++){
+      const d=document.createElement('div');
+      d.style.position='absolute';
+      d.style.width='10px'; d.style.height='14px';
+      d.style.background=colors[Math.floor(Math.random()*colors.length)];
+      d.style.left=(40+Math.random()*60)+'%';
+      d.style.top='40%';
+      d.style.borderRadius='2px';
+      d.style.transform=`translate(-50%,-50%) rotate(${Math.random()*360}deg)`;
+      d.style.opacity='0.95';
+      d.style.transition='transform 1.2s cubic-bezier(.2,.9,.3,1), opacity 1.2s';
+      document.body.appendChild(d);
+      setTimeout(()=>{
+        const x = (Math.random()-0.5)*1200;
+        const y = -400 - Math.random()*400;
+        d.style.transform = `translate(${x}px,${y}px) rotate(${Math.random()*720}deg)`;
+        d.style.opacity='0';
+      },10);
+      setTimeout(()=> d.remove(),1400);
+    }
+  }
+</script>
+</body>
+</html>
